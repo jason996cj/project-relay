@@ -1,0 +1,230 @@
+project-relay User Guide
+Simplified edition | 2026-10-19
+
+License: MIT. Copyright (c) 2026 CJ. The repository and installable ZIP include LICENSE.
+
+GitHub edition: This guide corresponds to USER_GUIDE.zh-CN.txt. The release asset project-relay.zip contains the English skill. Prompts and project records may still be written in Chinese. GitHub's automatically generated Source code (zip) is a full repository archive with a different layout; use the project-relay.zip release asset for the installation prompt below.
+
+1. What it does
+
+Start a project in Codex and continue it in Claude, work in the opposite direction, or resume later in the same tool.
+
+This skill maintains a short project record so the next assistant knows:
+1. Which data is being used, where it is located, and what important processing has been performed.
+2. Which algorithm, code entry point, and key parameters are current, and the reasons and effects of important changes.
+3. Which milestone results exist, and which checks passed, remain unperformed, or failed.
+4. Where to start next, which inputs are needed, and how to judge completion.
+
+The default record is PROJECT_STATE.md at the project root. Reuse an equivalent progress document if one already exists; do not create a duplicate.
+
+Update only at important changes, completed stages, blockers, handoffs, or the end of the current work session. Do not record every conversation message or tool operation. Keep code, data, figures, and detailed logs in their existing locations and reference their paths in the record.
+
+The skill does not coordinate simultaneous agents or transfer project files automatically. Both sides need access to the same latest record and relevant project files for a successful handoff.
+
+2. Before installation
+
+Place project-relay.zip in the target project's root, open that project in Codex or Claude Code, and send the installation prompt below. This works on another computer without retaining the original computer's username or absolute paths.
+
+The archive should contain:
+  project-relay/SKILL.md
+
+Project-local installation locations:
+  Codex:       .agents/skills/project-relay/SKILL.md
+  Claude Code: .claude/skills/project-relay/SKILL.md
+
+All paths above are relative to the project root. If the project will use both tools, run the installation prompt in each tool. Both skill copies have the same content and share one project record.
+
+Installation makes the skill discoverable. It does not mean a project record has been created or project work has started.
+
+3. Installation prompt (copy and paste)
+
+[PROMPT START]
+Install project-relay.zip from the current project root as a skill for this project.
+
+First confirm the project root and inspect project-relay/SKILL.md in the archive. Then install for the current tool:
+- Codex: install at .agents/skills/project-relay/SKILL.md relative to the project root.
+- Claude Code: install at .claude/skills/project-relay/SKILL.md relative to the project root.
+
+Install only the copy for the current tool. Avoid an extra nested project-relay folder.
+If a skill with the same name already exists and its content matches, skip it. If the content differs, back it up under work/skill-backups/ in the project before updating it.
+Keep the original ZIP and any bundled license file. Do not change global configuration.
+
+Check the installed layout and the name and description in SKILL.md, then report the final installation path.
+Only install the skill in this session. Do not invoke it, create a project state record, or start project work.
+[PROMPT END]
+
+If the skill does not appear in the available-skills list after installation, reopen the session. If necessary, restart the tool and check the installation directory again.
+
+4. How to invoke it
+
+The general form is:
+  Use the project-relay skill to ...
+
+In interfaces that support the corresponding shortcut, you can also use:
+  Codex CLI / IDE: $project-relay ...
+  Claude Code:    /project-relay ...
+
+The general-purpose prompts below use natural language. You can replace the opening with the shortcut supported by your tool. If the project already uses another progress document, put its actual path in the prompt and keep reusing it.
+
+5. Common prompts
+
+1. Create the initial project record
+
+[PROMPT START]
+Use the project-relay skill to organize a project state record from existing project files and facts already confirmed in this conversation. Reuse an equivalent document if one exists; otherwise create PROJECT_STATE.md.
+Record the current goal, data and methods, key changes, milestone results, validation status, and next step. Inspect only the files needed to organize the record. Do not run new experiments. Mark anything that cannot be confirmed as "Needs verification."
+Only organize the record in this session; do not start new project work.
+[PROMPT END]
+
+2. Review progress without modifying the project
+
+[PROMPT START]
+Use the project-relay skill to read the project record and check directly relevant files if needed. Briefly explain the current progress, which results have been validated, remaining issues, and the recommended next step.
+This is a read-only request. Do not modify files or start computation.
+[PROMPT END]
+
+3. Continue the recorded next step
+
+[PROMPT START]
+Use the project-relay skill. Read the project record, check the data, code, and results directly relevant to the next step, and then continue from that step.
+Build on existing work. Redo only the affected parts when relevant inputs or methods have changed, results are missing, or validation has failed. Update the record when a stage is complete or the current work session ends.
+[PROMPT END]
+
+4. Specify the current task and maintain the record
+
+Replace "INSERT THE SPECIFIC TASK" below with the actual task.
+
+[PROMPT START]
+Use the project-relay skill and read the project record first. The task for this session is: INSERT THE SPECIFIC TASK.
+Check the relevant inputs, then carry out the task. If it conflicts with an older plan in the record, follow this explicit request and record important changes. When finished, update the milestone results, actual validation results, and next step.
+[PROMPT END]
+
+5. After an important data, preprocessing, or algorithm change
+
+[PROMPT START]
+Use the project-relay skill to update the project record with the data, preprocessing, algorithm, or important parameter changes that actually occurred in this session.
+Explain what changed, why, and which results are affected. Identify results that remain valid, are no longer valid, or need recomputation. Include relevant file paths. Record only facts that have occurred; do not present plans as completed work.
+Only update the record in this session. Do not automatically start recomputation.
+[PROMPT END]
+
+6. Organize results after completing a stage
+
+[PROMPT START]
+Use the project-relay skill to organize this stage's results and update the project record.
+Record output locations, associated data and methods, and the validation actually performed and its results. Clearly identify parts that are unvalidated, failed validation, or need recomputation. Preserve key decisions and failure reasons that affect subsequent work, and specify the next step and its completion criteria.
+Only organize existing results in this session. Do not begin a new stage.
+[PROMPT END]
+
+7. Pause and prepare to resume later
+
+[PROMPT START]
+Use the project-relay skill to update the project record before ending this session.
+State what is complete, what remains unfinished, any blockers or failure reasons, and exactly where to resume next time. If a task is still running, record its entry point and currently confirmed status; do not describe running work as complete.
+After updating the record, briefly report where it and the results are located. Do not start a new task.
+[PROMPT END]
+
+8. Recover after an interruption when the record may be stale
+
+[PROMPT START]
+Use the project-relay skill. Read the project record, then check the work to be continued and its relevant files.
+If the record disagrees with the actual files, explain and investigate the discrepancy first. Mark anything that cannot be confirmed as "Needs verification." Do not assume a task is complete merely because a file exists. Update the necessary status information, then continue from a point that can be confirmed.
+[PROMPT END]
+
+6. Codex → Claude: complete handoff prompts
+
+End the current stage in Codex:
+
+[PROMPT START]
+Use the project-relay skill to update this project's state record for a handoff to Claude.
+Record key data and algorithm changes, milestone results, actual validation results, unresolved issues, and the next step. Save handoff information in project files, not only in the conversation.
+Only prepare the handoff record in this session. Do not start a new task. When done, tell me the record's path and which related files must be provided for the handoff.
+[PROMPT END]
+
+Take over in Claude Code:
+
+[PROMPT START]
+/project-relay Take over this project previously worked on in Codex. First read PROJECT_STATE.md at the project root, or the equivalent progress document if the project already uses one.
+Check the data, code, and results relevant to the next step, then continue from that step. Preserve existing valid results and investigate any discrepancy first. Update the same record when a stage is complete or the current work session ends.
+[PROMPT END]
+
+7. Claude → Codex: reverse handoff prompts
+
+End the current stage in Claude Code:
+
+[PROMPT START]
+/project-relay Update this project's state record for a handoff to Codex.
+Record key data and algorithm changes, milestone results, actual validation results, unresolved issues, and the next step. Save handoff information in project files, not only in the conversation.
+Only prepare the handoff record in this session. Do not start a new task. When done, tell me the record's path and which related files must be provided for the handoff.
+[PROMPT END]
+
+Take over in Codex:
+
+[PROMPT START]
+Use the project-relay skill to take over this project previously worked on in Claude. First read PROJECT_STATE.md at the project root, or the equivalent progress document if the project already uses one.
+Check the data, code, and results relevant to the next step, then continue from that step. Preserve existing valid results and investigate any discrepancy first. Update the same record when a stage is complete or the current work session ends.
+[PROMPT END]
+
+8. Moving to another computer
+
+Transfer or synchronize the project record, relevant code, required data, and existing results to the destination computer. project-relay.zip alone cannot restore project progress: it contains skill instructions and any applicable license, not project data, results, or chat history.
+
+If you did not transfer the corresponding hidden skill directory, place the ZIP in the destination project's root and run the installation prompt in section 3 again. Prefer paths relative to the project root in the record. Large data files outside the project need a separately accessible location.
+
+After installation, use:
+
+[PROMPT START]
+Use the project-relay skill. This project has just moved to another computer. Read the project record and check the files, paths, run entry points, and environment required for the next step.
+Continue work that can be confirmed as ready. List missing files or invalid paths; do not guess data locations or rerun all previously validated and still-valid results merely because the computer changed. Record any path or environment changes that actually occurred.
+[PROMPT END]
+
+9. Using regular Claude web or desktop chat
+
+Regular Claude chat and Claude Code use different installation methods. Placing files under .claude/skills/ does not by itself let a web chat read them.
+
+If your account supports custom Skills, enable Code execution and file creation under Settings → Capabilities, then use Customize → Skills → "+" → "Create skill" → "Upload a skill" to upload project-relay.zip and enable it. Exact controls and availability may vary with the version or organization settings.
+
+Also provide the latest project record and files required for the current task. Uploading a skill does not automatically grant Claude access to the project directory on your computer.
+
+Takeover prompt:
+
+[PROMPT START]
+Use the project-relay skill to take over the work from the project record and related files I have provided.
+Check the materials required for the recorded next step. Continue if they are available; otherwise list the missing files without guessing the contents of unprovided project files. When finished, provide an updated project record for me to save back into the project.
+[PROMPT END]
+
+Save the chat's outputs and updated record back into the project so the next tool can read them and continue.
+
+10. The usual workflow
+
+Install once → Read the record and continue → Update the record at the end of a stage → Synchronize project files → Switch tools, read the same record, and continue.
+
+SKILL.md defines how to record progress and take over. PROJECT_STATE.md stores the actual state of this project. You can change the handoff direction at any time; keep maintaining the same current project record.
+
+Official installation and invocation documentation (follow the official guidance if the interface changes):
+Codex skills: https://learn.chatgpt.com/docs/build-skills
+Claude Code skills: https://code.claude.com/docs/en/skills
+Claude custom skills: https://support.claude.com/en/articles/12512180-use-skills-in-claude
+
+License text (English original)
+
+MIT License
+
+Copyright (c) 2026 CJ
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -1,0 +1,230 @@
+project-relay 使用说明
+简化版｜2026-10-19
+
+许可证：MIT。版权声明：Copyright (c) 2026 CJ。仓库和可安装 ZIP 均包含 LICENSE。
+
+GitHub 版：本说明与 USER_GUIDE.en.txt 对应。Release 附件 project-relay.zip 包含英文技能，仍可用中文发送提示词和维护项目记录。GitHub 自动生成的 Source code (zip) 是整个仓库，结构不同；执行下方安装提示词时请使用 project-relay.zip 附件。
+
+一、它解决什么问题
+
+同一个项目可以先由 Codex 做一部分，再交给 Claude 继续；也可以反过来，或者隔一段时间由同一个工具接着做。
+
+这个 skill 的作用是维护一份简短的项目状态记录，让接手者知道：
+1. 当前使用什么数据，数据在哪里，做过哪些重要处理。
+2. 当前采用什么算法、代码入口和关键参数；重要变化的原因及影响。
+3. 已经产生哪些阶段性成果，哪些验证通过、尚未验证或未通过。
+4. 下一步从哪里开始，需要什么输入，如何判断完成。
+
+默认记录文件是项目根目录下的 PROJECT_STATE.md。已有同类进度文档时直接复用，不重复创建。
+
+只有关键变化、阶段完成、阻塞、交接或本次工作结束时才更新；不逐条记录聊天和工具操作。代码、数据、图表及详细日志仍保存在原位置，记录中引用路径。
+
+它不负责同时调度多个 agent，也不会自动传输项目文件。双方能够读取同一份最新记录及相关项目文件，才能完成接力。
+
+二、安装前准备
+
+把 project-relay.zip 放到目标项目的根目录，在 Codex 或 Claude Code 中打开这个项目，然后发送下面的安装提示词。可用于其他电脑，不需要保留原电脑的用户名或绝对路径。
+
+压缩包内应包含：
+  project-relay/SKILL.md
+
+项目级安装位置：
+  Codex：      .agents/skills/project-relay/SKILL.md
+  Claude Code：.claude/skills/project-relay/SKILL.md
+
+以上路径都相对项目根目录。如果同一项目会使用两个工具，可分别在两个工具中执行安装提示词。两份技能使用相同内容，共用项目中的同一份状态记录。
+
+安装只让工具能够找到技能，不代表已生成项目记录或开始执行项目任务。
+
+三、安装提示词（可直接复制）
+
+【提示词开始】
+请把当前项目根目录中的 project-relay.zip 安装为本项目使用的技能。
+
+先确认项目根目录，检查压缩包中的 project-relay/SKILL.md，然后按当前工具安装：
+- Codex：安装到项目根目录的 .agents/skills/project-relay/SKILL.md。
+- Claude Code：安装到项目根目录的 .claude/skills/project-relay/SKILL.md。
+
+只安装当前工具对应的一份，避免重复嵌套 project-relay 文件夹。
+如果已有同名技能，内容相同则跳过；内容不同则先备份到项目的 work/skill-backups/，再更新。
+保留原 ZIP 和包内的许可证文件，不修改全局配置。
+
+完成后检查文件结构及 SKILL.md 的 name、description，报告最终安装路径。
+本次只安装，不调用技能，不创建项目状态记录，也不开始项目任务。
+【提示词结束】
+
+若安装后技能未出现在可选列表中，重新打开会话；必要时重启当前工具，再检查安装目录。
+
+四、如何调用
+
+最通用的表达是：
+  使用 project-relay 技能，……
+
+支持相应快捷语法的界面也可以使用：
+  Codex CLI / IDE：$project-relay ……
+  Claude Code：/project-relay ……
+
+下面的常用提示词使用自然语言。也可把开头替换为当前工具支持的快捷语法。若项目已有另一份进度文档，应在提示词中填入它的实际路径，继续复用。
+
+五、常用调用提示词
+
+1. 第一次建立项目记录
+
+【提示词开始】
+使用 project-relay 技能，根据当前项目已有文件和本次会话中已经确认的事实，整理项目状态记录；已有同类文档则复用，否则创建 PROJECT_STATE.md。
+记录当前目标、数据和方法、关键变化、阶段性成果、验证情况及下一步。只检查整理记录所需的文件，不运行新的实验；无法确认的内容标为“待核实”。
+本次只整理记录，不开始新的项目任务。
+【提示词结束】
+
+2. 先了解进度，不修改项目
+
+【提示词开始】
+使用 project-relay 技能，读取项目状态记录，必要时核对直接相关的文件。简要告诉我：目前做到哪里、哪些成果已经验证、还有哪些问题、建议从哪一步继续。
+本次只读，不修改文件，也不启动计算。
+【提示词结束】
+
+3. 接着上次的下一步做
+
+【提示词开始】
+使用 project-relay 技能，先读取项目状态记录，核对下一步直接涉及的数据、代码和成果，然后继续记录中的下一步。
+沿用已有工作；只有相关输入或方法变化、结果缺失或验证失败时，才重做受影响的部分。完成一个阶段或本次工作结束时更新记录。
+【提示词结束】
+
+4. 指定本次工作，同时维护记录
+
+将下面的“填写具体任务”替换为实际任务。
+
+【提示词开始】
+使用 project-relay 技能，先读取项目状态记录。本次任务是：填写具体任务。
+核对相关输入后执行；若与记录中的旧计划冲突，以本次明确要求为准，并记录重要变化。完成后更新阶段性成果、实际验证结果及下一步。
+【提示词结束】
+
+5. 数据、预处理或算法发生重要变化后
+
+【提示词开始】
+使用 project-relay 技能，把本次实际发生的数据、预处理、算法或重要参数变化更新到项目记录中。
+写清改了什么、为什么改、影响哪些成果；标明仍有效、已经失效或需要重算的结果。附相关文件路径，只记录已经发生的事实，不把计划写成已完成。
+本次只更新记录，不自动启动重算。
+【提示词结束】
+
+6. 一个阶段做完，整理成果
+
+【提示词开始】
+使用 project-relay 技能，整理本阶段成果并更新项目状态记录。
+记录产物位置、对应的数据和方法、已经执行的验证及结果，明确未验证、未通过或需要重算的部分。保留影响后续工作的关键决定和失败原因，并给出下一步及完成判据。
+本次只整理已有成果，不开启新阶段。
+【提示词结束】
+
+7. 暂停工作，准备下次继续
+
+【提示词开始】
+使用 project-relay 技能，更新项目状态记录，准备结束本次工作。
+写清已经完成的内容、尚未完成的步骤、阻塞或失败原因，以及下一次具体从哪里继续。若有仍在运行的任务，记录其入口和当前已确认状态，不把运行中写成完成。
+更新后简要报告记录和成果的位置，不启动新任务。
+【提示词结束】
+
+8. 上次中断，记录可能没有及时更新
+
+【提示词开始】
+使用 project-relay 技能，先读取项目状态记录，再核对本次要继续的工作及其相关文件。
+如果记录与实际文件不一致，先说明并核实差异，无法确认的内容标为“待核实”；不要仅凭文件存在就认定任务已完成。更新必要状态后，从能够确认的位置继续。
+【提示词结束】
+
+六、Codex → Claude：完整交接提示词
+
+在 Codex 中结束本阶段：
+
+【提示词开始】
+使用 project-relay 技能，更新当前项目的状态记录，准备交给 Claude。
+记录关键数据和算法变化、阶段性成果、实际验证结果、未解决问题及下一步。交接信息写入项目文件，不只留在聊天中。
+本次只整理交接记录，不开始新的任务。完成后告诉我记录路径，以及交接必须提供的相关文件。
+【提示词结束】
+
+在 Claude Code 中接手：
+
+【提示词开始】
+/project-relay 接手这个此前由 Codex 推进的项目。先读取项目根目录的 PROJECT_STATE.md；已有其他同类进度文档则读取该文档。
+核对下一步相关的数据、代码和成果，然后继续记录中的下一步。保留已有有效成果，发现差异时先核实；阶段完成或本次工作结束时更新同一份记录。
+【提示词结束】
+
+七、Claude → Codex：反向交接提示词
+
+在 Claude Code 中结束本阶段：
+
+【提示词开始】
+/project-relay 更新当前项目的状态记录，准备交给 Codex。
+记录关键数据和算法变化、阶段性成果、实际验证结果、未解决问题及下一步。交接信息写入项目文件，不只留在聊天中。
+本次只整理交接记录，不开始新的任务。完成后告诉我记录路径，以及交接必须提供的相关文件。
+【提示词结束】
+
+在 Codex 中接手：
+
+【提示词开始】
+使用 project-relay 技能，接手这个此前由 Claude 推进的项目。先读取项目根目录的 PROJECT_STATE.md；已有其他同类进度文档则读取该文档。
+核对下一步相关的数据、代码和成果，然后继续记录中的下一步。保留已有有效成果，发现差异时先核实；阶段完成或本次工作结束时更新同一份记录。
+【提示词结束】
+
+八、换电脑时怎么做
+
+把项目状态记录、相关代码、必要数据和已有成果一起迁移或同步到目标电脑。只有 project-relay.zip 不足以恢复项目进度；ZIP 中只有技能指令及适用的许可证，没有项目数据、成果或聊天记录。
+
+如果没有迁移对应的隐藏技能目录，在目标电脑的项目根目录放入 ZIP，再执行第三节的安装提示词。记录中的路径尽量相对项目根目录；项目外的大数据文件需另行提供可访问位置。
+
+安装后可使用：
+
+【提示词开始】
+使用 project-relay 技能，这个项目刚迁移到另一台电脑。先读取项目状态记录，核对下一步所需的文件、路径、运行入口和必要环境。
+能确认可用的部分直接继续；缺失或路径失效的部分列明，不猜测数据位置，不因为换电脑就重跑已经验证且仍有效的全部成果。更新实际发生的路径或环境变化。
+【提示词结束】
+
+九、如果使用普通 Claude 网页版或桌面聊天
+
+普通 Claude 聊天与 Claude Code 的安装方式不同：不能只把文件放进 .claude/skills/ 就期待网页聊天读取它。
+
+若账号支持自定义 Skills，可在 Settings → Capabilities 中启用 Code execution and file creation，再通过 Customize → Skills → “+” → “Create skill” → “Upload a skill” 上传 project-relay.zip 并启用。具体入口和可用性可能随版本或组织设置变化。
+
+同时提供最新项目状态记录和本次需要的相关文件。上传技能不会自动授权 Claude 读取电脑上的项目目录。
+
+接手提示词：
+
+【提示词开始】
+使用 project-relay 技能，根据我提供的项目状态记录和相关文件接手工作。
+先核对记录中的下一步所需材料；材料齐全时继续，缺失时列明需要的文件，不推测未提供的项目内容。完成后给出更新后的项目状态记录，供我保存回项目。
+【提示词结束】
+
+将聊天产物和更新后的记录保存回项目后，另一工具才能读取并继续。
+
+十、最常用的流程
+
+安装一次 → 读取记录并继续 → 阶段结束时更新记录 → 同步项目文件 → 换工具后读取同一份记录并继续。
+
+技能文件 SKILL.md 规定“如何记录和接手”；项目文件 PROJECT_STATE.md 保存“这个项目实际做到哪里”。交接方向可以随时改变，始终维护同一份最新项目记录即可。
+
+官方安装与调用文档（界面有变化时以官方说明为准）：
+Codex skills：https://learn.chatgpt.com/docs/build-skills
+Claude Code skills：https://code.claude.com/docs/en/skills
+Claude 自定义 skills：https://support.claude.com/en/articles/12512180-use-skills-in-claude
+
+许可证全文（英文原文）
+
+MIT License
+
+Copyright (c) 2026 CJ
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
